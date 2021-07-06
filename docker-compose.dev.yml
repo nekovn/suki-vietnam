@@ -1,0 +1,109 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7.22
+    build:
+      context: .
+      dockerfile: compose/mysql/Dockerfile
+    container_name: mysql
+    env_file:
+      - ./.envs/.mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci
+    volumes:
+        - .db_data:/var/lib/mysql
+    ports:
+        - 33066:3306
+    networks:
+      - django-nginx
+
+  adminer:
+    image: adminer:4.7-standalone
+    container_name: adminer
+    ports:
+      - 8081:8080
+    env_file: ./.envs/.adminer
+    depends_on:
+      - db
+    networks:
+      - django-nginx
+
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    command: /start_dev.sh
+    networks:
+      - django-nginx
+    env_file:
+      - ./.envs/.django
+    volumes:
+      - .:/code
+      - django-static:/backend/static
+    depends_on:
+      - db
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    volumes:
+      - './frontend/oonavi:/app/:ro'
+      - '/app/node_modules'
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
+    networks:
+      - django-nginx
+    environment:
+      - NODE_ENV=development
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    volumes:
+      - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
+      - django-static:/usr/src/app/static
+      - ./backend/media:/usr/src/app/media:ro
+    networks:
+      - django-nginx
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    networks:
+      - django-nginx
+
+  celery:
+    build: ./backend
+    container_name: celery
+    command: bash -c 'celery worker --app=backend.celery_app:app --loglevel=info'
+    volumes:
+      - ./backend:/code
+    depends_on:
+      - db
+      - redis
+    networks:
+      - django-nginx
+
+  portainer:
+    image: portainer/portainer
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer-data:/data
+    ports:
+      - 9000:9000
+
+volumes:
+  django-static:
+  portainer-data:
+
+networks:
+  django-nginx:
+    driver: bridge

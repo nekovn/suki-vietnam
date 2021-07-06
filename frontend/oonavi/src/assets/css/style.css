@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  @variants dark {
+    .bg-black-alt {
+      background: #1c1e21
+    }
+
+  }
+}

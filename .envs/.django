@@ -1,0 +1,15 @@
+DB_HOST=db
+DB_PORT=3306
+DB_PASSWORD=qweasdfg2s
+DB_USER=admin
+DB_NAME=oonavi
+
+EMAIL_HOST=smtp.gomogy.co.jp
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_HOST_USER=cuong@gomogy.co.jp
+EMAIL_HOST_PASSWORD=oTC&6U3C
+
+
+
+
