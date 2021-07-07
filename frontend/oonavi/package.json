@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "node --max_old_space_size=4096 node_modules/@vue/cli-service/bin/vue-cli-service.js build ",
     "lint": "vue-cli-service lint",
-    "start": "cross-env NODE_OPTIONS=--max-old-space-size=4096 webpack"
   },
   "dependencies": {
     "ant-design-vue": "^2.1.6",
