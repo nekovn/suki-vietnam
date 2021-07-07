@@ -5,7 +5,6 @@ COPY frontend/oonavi/package*.json /app/
 COPY frontend/oonavi/postcss.config.js /app/
 COPY frontend/oonavi/tailwind.config.js /app/
 RUN npm cache verify
-RUN npm install --save express
 RUN npm install
 COPY frontend/oonavi /app/
 RUN npm run build
