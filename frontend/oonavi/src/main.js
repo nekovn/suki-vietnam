@@ -3,11 +3,9 @@ import App from './App.vue'
 import router from './router'
 import store from "./store"
 import './assets/css/style.css'
-
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
-  
- 
+import  'raw-loader!../file';
 
 const app = createApp(App);
 app.config.productionTip = false;
