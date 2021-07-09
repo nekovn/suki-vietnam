@@ -49,7 +49,7 @@
                 v-model="element.data"
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
-                :group="{'drag':isAnimateSpin}"
+                group="drag"
                 @change="log"
                 @end="end"
                 :clone="cloneItem"
