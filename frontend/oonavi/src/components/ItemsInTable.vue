@@ -1,32 +1,35 @@
 <template>
   <table class="w-full grid-cols-5 overflow-hidden">
     <tbody class="text-sm font-light">
-    <draggable v-if="state.list.length" v-model="state.list" item-key="id" >
+    <draggable v-if="state.list.length" v-model="state.list" item-key="id" @end="handleEndGroup">
       <template #item="{ element }">
-        <tr class="border-b border-gray-200 hover:bg-gray-100">
+        <tr class="border-b border-gray-200 hover:bg-gray-100" :title="element.title">
           <td
               class="
-                lg:px-4
-                lg:w-auto
-                sm:w-auto
-                sm:px-2
-                xl:px-5
-                xl:w-auto
-                2xl:w-2xl
-                text-left
+                w-24
                 border-r-2
                 bg-blue-50
                 p-2
-
+                text-center
               "
           >
+            <img
+                :place="element.place"
+                :src="element.image"
+                :alt="element.title"
+                :class="{'animate-spin':isAnimateSpin}"
+                class="w-6 h-auto mx-auto bg-no-repeat bg-center rounded-full text-blue-50 mt-2"
+            />
             <a
                 v-if="element.title.length < 10"
                 href="#"
                 class="font-medium text-blue-400"
-                @click="handleGroup(element.id, element.title)"
+                @click="handleGroup(element.id, element.title, element.image)"
                 :title="element.title"
-            >{{ element.title }}</a
+            >
+
+              {{ element.title }}
+            </a
             >
             <a
                 v-else
@@ -36,6 +39,7 @@
                 :title="element.title"
             >{{ element.title.substring(0, 10) + ".." }}</a
             >
+
           </td>
           <div
               @drop="drop($event)"
@@ -62,8 +66,8 @@
                       :id="`category-` + element.category"
                   >
                     <a
-                        v-if="element.title.length < 13"
                         :href="element.url"
+                        :class="{'animate-bounce':isAnimateSpin}"
                         class="
                           font-light
                           text-xs
@@ -83,27 +87,6 @@
                         target="_blank"
                     >
                       {{ element.title }}
-                    </a>
-                    <a
-                        v-else
-                        :href="element.url"
-                        class="
-                          font-light
-                          text-xs
-                          w-12
-                          lg:text-sm
-                          lg:w-full
-                          xl:text-sm
-                          xl:w-full
-                          2xl:w-full
-                          2xl:text-lg
-                          text-gray-700
-                        "
-                        :title="element.title"
-                        :id="`place-` + element.id"
-                        target="_blank"
-                    >
-                      {{ element.title.substring(0, 13) + ".." }}
                     </a>
                   </div>
                 </td>
@@ -126,7 +109,7 @@
 </template>
 <script>
 import {useRouter} from "vue-router";
-import {reactive, onMounted, toRef, ref} from "vue";
+import {reactive, onMounted, toRef, ref, computed} from "vue";
 import draggable from "vuedraggable";
 import PaginationItems from "./PaginationItems";
 import {useStore} from "vuex";
@@ -148,6 +131,7 @@ export default {
     const router = useRouter();
     const listItems = toRef(props, "newListItems");
     const cloneData = ref([]);
+    const isAnimateSpin = computed(()=>store.state.isAnimateSpin)
     const state = reactive({
       totalItem: 10,
       totalLogo: 10,
@@ -166,7 +150,36 @@ export default {
       evt.stopPropagation();
       evt.preventDefault();
     }
+    function handleEndGroup(e) {
+      const valueNewIndex =
+          parseInt(e.newIndex) === 10 ? parseInt(e.newIndex) - 1 : parseInt(e.newIndex) + 1;
+      const elmChildren = e.to.children[valueNewIndex];
+      const elmNewTitle = elmChildren.title;
+      const searchNewTitle = (element) => element.title === elmNewTitle;
+      const new_index = state.categories.findIndex(searchNewTitle);
+      const searchOddTitle = (element) => element.title === e.item.title;
+      const old_index = state.categories.findIndex(searchOddTitle);
+      if (new_index >= state.categories.length) {
+        let k = new_index - state.categories.length + 1;
+        while (k--) {
+          state.categories.push(undefined);
+        }
+      }
 
+
+      if (new_index > old_index) {
+        state.categories.splice(new_index - 1, 0, state.categories.splice(old_index, 1)[0]);
+      } else {
+        state.categories.splice(new_index, 0, state.categories.splice(old_index, 1)[0]);
+      }
+
+      let flag = 1
+      state.categories.forEach((val, index) => {
+        val.place = flag;
+        flag++;
+      })
+      state.categories = state.categories.sort((a, b) => a.place - b.place)
+    }
     async function handleGetLogo(data){
       const searchTitle = (element) => element.title === data.title;
       const setIndexItem = state.items.findIndex(searchTitle);
@@ -308,6 +321,7 @@ export default {
       dragenter,
       drop,
       dragover,
+      handleEndGroup
     };
   },
 };
