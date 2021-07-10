@@ -44,7 +44,6 @@
               @drop="drop($event)"
               @dragenter="dragenter($event)"
               @dragover="dragover($event)"
-              :disabled="!isAnimateSpin"
           >
             <draggable
                 v-model="element.data"
@@ -205,12 +204,15 @@ export default {
         notification_error(notification, `もう一度やり直してください。`)
       }
     }
+    
     async function drop(evt) {
-      const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
-      if (result) {
-        store.commit("setOpenItemPop", true)
-        store.commit("setItemPopModal", result.newData)
-        store.commit("setItemsFromGG", result.data)
+      if(isAnimateSpin){
+            const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
+        if (result) {
+          store.commit("setOpenItemPop", true)
+          store.commit("setItemPopModal", result.newData)
+          store.commit("setItemsFromGG", result.data)
+        }
       }
     }
 
