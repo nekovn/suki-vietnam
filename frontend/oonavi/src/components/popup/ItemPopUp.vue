@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isPictureOpen">
+  <div v-if="isPictureOpen && isAnimateSpin">
     <section
         @click="close"
         class="z-20 h-screen w-screen bg-gray-500 fixed top-0 opacity-50"
@@ -57,7 +57,8 @@ export default {
     const sizePage = ref(3)
     const currentPage = ref(1)
     const isPictureOpen = computed(() => store.state.isOpenItemPop)
-
+    const isAnimateSpin = computed(()=>store.state.isAnimateSpin)
+    
     const startNumber = ref(0)
     const endNumber = ref(3)
     const getAllLogo = computed(() => store.state.arrItemPop.image.slice(startNumber.value, endNumber.value))
@@ -91,7 +92,7 @@ export default {
       endNumber.value = (parseInt((currentPage.value - 1)) * parseInt(sizePage.value)) + parseInt(sizePage.value);
     }
 
-    return {handleGetImage, isPictureOpen, close, getAllLogo, onChange, currentPage, totalPage, getTitlePic}
+    return {handleGetImage, isPictureOpen, isAnimateSpin, close, getAllLogo, onChange, currentPage, totalPage, getTitlePic}
   },
 }
 </script>
