@@ -50,7 +50,7 @@
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
                 group="drag"
-                :disabled="!isAnimateSpin"
+            
                 @change="log"
                 @end="end"
                 :clone="cloneItem"
