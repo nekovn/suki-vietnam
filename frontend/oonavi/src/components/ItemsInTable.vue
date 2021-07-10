@@ -49,7 +49,7 @@
                 v-model="element.data"
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
-                :group="{ name: 'drag', pull: 'clone', put: isAnimateSpin ? true : false }"
+                :group="{ name: 'drag', pull: isAnimateSpin ? 'clone' : false , put: isAnimateSpin ? true : false }"
              
                 @change="log"
                 @end="end"
