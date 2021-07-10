@@ -4,7 +4,7 @@
         class=" m-auto bg-white p-2 rounded-md shadow-md"
     >
       <section class="text-gray-600 body-font relative">
-        <div class="lg:px-5 lg:py-20 xl:py-20 2xl:py-20 py-1 -mt-16">
+        <div class="lg:px-5 lg:py-20 xl:py-20 2xl:py-20 py-1 -mt-14">
           <div class="font-bold flex items-center">
             <div>
               <img
