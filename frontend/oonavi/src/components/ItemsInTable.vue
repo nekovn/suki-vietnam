@@ -44,7 +44,6 @@
               @drop="drop($event)"
               @dragenter="dragenter($event)"
               @dragover="dragover($event)"
-              :draggable="isAnimateSpin"
           >
             <draggable
                 v-model="element.data"
@@ -207,12 +206,15 @@ export default {
     }
     
     async function drop(evt) {
-        const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
-        if (result) {
-          store.commit("setOpenItemPop", true)
-          store.commit("setItemPopModal", result.newData)
-          store.commit("setItemsFromGG", result.data)
+        if(store.state.isAnimateSpin){
+          const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
+          if (result) {
+            store.commit("setOpenItemPop", true)
+            store.commit("setItemPopModal", result.newData)
+            store.commit("setItemsFromGG", result.data)
+          }
         }
+
     }
 
     async function end(e) {
@@ -324,7 +326,8 @@ export default {
       cloneItem,
       handleGroup,
       dragenter,
-      drop,
+      
+      ,
       dragover,
       isAnimateSpin,
       handleEndGroup
