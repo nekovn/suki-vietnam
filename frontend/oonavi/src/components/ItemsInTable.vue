@@ -206,15 +206,12 @@ export default {
     }
     
     async function drop(evt) {
-        if(store.state.isAnimateSpin){
           const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
           if (result) {
             store.commit("setOpenItemPop", true)
             store.commit("setItemPopModal", result.newData)
             store.commit("setItemsFromGG", result.data)
           }
-        }
-
     }
 
     async function end(e) {
