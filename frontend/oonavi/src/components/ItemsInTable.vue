@@ -42,6 +42,7 @@
           </td>
             <draggable
                 v-model="element.data"
+                :disabled="!isAnimateSpin"
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
                 :id="`category-` + element.id"
