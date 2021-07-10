@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isPictureOpen && isAnimateSpin">
+  <div v-if="isPictureOpen">
     <section
         @click="close"
         class="z-20 h-screen w-screen bg-gray-500 fixed top-0 opacity-50"
