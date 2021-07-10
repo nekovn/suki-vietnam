@@ -44,13 +44,14 @@
               @drop="drop($event)"
               @dragenter="dragenter($event)"
               @dragover="dragover($event)"
+              :disabled="!isAnimateSpin"
           >
             <draggable
                 v-model="element.data"
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
                 group="drag"
-                :disabled="isAnimateSpin"
+                :disabled="!isAnimateSpin"
                 @change="log"
                 @end="end"
                 :clone="cloneItem"
