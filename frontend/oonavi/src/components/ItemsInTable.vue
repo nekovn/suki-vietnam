@@ -40,11 +40,6 @@
             >{{ element.title.substring(0, 10) + ".." }}</a
             >
           </td>
-          <div
-              @drop="drop($event)"
-              @dragenter="dragenter($event)"
-              @dragover="dragover($event)"
-          >
             <draggable
                 v-model="element.data"
                 item-key="id"
@@ -88,12 +83,10 @@
                     >
                       {{ element.title }}
                     </a>
-
                   </div>
                 </td>
               </template>
             </draggable>
-          </div>
         </tr>
       </template>
     </draggable>
@@ -106,7 +99,6 @@
       @getPagination="getPagination"
       v-if="state.list.length"
   />
-  <item-pop-up @handleGetItem="handleGetLogo"/>
 </template>
 <script>
 import {useRouter} from "vue-router";
@@ -118,12 +110,11 @@ import NoItemsInTable from "./NoItemsInTable.vue";
 import {getUrlFromGG} from "../utilities/helps/getUrlFromGG";
 import {handleEventEnd} from "../utilities/helps/handleEventEnd";
 import {getCloneItem} from "../utilities/helps/getCloneItem";
-import ItemPopUp from "./popup/ItemPopUp";
 import {notification_error} from "../utilities/composition/useNotification";
 import {notification} from "ant-design-vue"
 export default {
   name: "itemsintable",
-  components: {ItemPopUp, draggable, PaginationItems, NoItemsInTable},
+  components: {draggable, PaginationItems, NoItemsInTable},
   props: {
     newListItems: Array,
   },
@@ -142,15 +133,6 @@ export default {
       id: "",
     });
 
-    function dragenter(evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
-
-    function dragover(evt) {
-      evt.stopPropagation();
-      evt.preventDefault();
-    }
     function handleEndGroup(e) {
       const valueNewIndex =
           parseInt(e.newIndex) === 10 ? parseInt(e.newIndex) - 1 : parseInt(e.newIndex) + 1;
@@ -182,37 +164,7 @@ export default {
       state.categories = state.categories.sort((a, b) => a.place - b.place)
     }
 
-    async function handleGetLogo(data){
-      const searchTitle = (element) => element.title === data.title;
-      const setIndexItem = state.items.findIndex(searchTitle);
-      const setIndexLogo = store.getters.getListLogo.findIndex(searchTitle);
-      if(setIndexItem !== -1 || setIndexLogo !== -1){
-        notification_error(notification, `現在、「 ${data.title} 」が存在されています。`)
-        return
-      }
-      const ItemsFromGG = store.state.ItemsFromGG
-      const obj = {
-        newData:data,
-        newIndex: ItemsFromGG.newIndex,
-        item: ItemsFromGG.item,
-        category: ItemsFromGG.category,
-      }
-      const getAddedItem = await store.dispatch("getItemFromLogo", obj);
-      if (getAddedItem.status) {
-        state.list = store.getters.getListItems
-      } else {
-        notification_error(notification, `もう一度やり直してください。`)
-      }
-    }
-    
-    async function drop(evt) {
-          const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
-          if (result) {
-            store.commit("setOpenItemPop", true)
-            store.commit("setItemPopModal", result.newData)
-            store.commit("setItemsFromGG", result.data)
-          }
-    }
+   
 
     async function end(e) {
       const result = await handleEventEnd(
@@ -315,16 +267,12 @@ export default {
 
     return {
       state,
-      handleGetLogo,
       listItems,
       getPagination,
       end,
       log,
       cloneItem,
       handleGroup,
-      dragenter,
-      drop,
-      dragover,
       isAnimateSpin,
       handleEndGroup
     };
