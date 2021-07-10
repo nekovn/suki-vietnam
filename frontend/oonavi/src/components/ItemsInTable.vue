@@ -1,7 +1,7 @@
 <template>
   <table class="w-full grid-cols-5 overflow-hidden">
     <tbody class="text-sm font-light">
-    <draggable v-if="state.list.length" v-model="state.list" item-key="id" @end="handleEndGroup">
+    <draggable v-if="state.list.length" v-model="state.list" item-key="id" @end="handleEndGroup" :disabled="!isAnimateSpin">
       <template #item="{ element }">
         <tr class="border-b border-gray-200 hover:bg-gray-100" :title="element.title">
           <td
@@ -12,6 +12,7 @@
                 p-2
                 text-center
               "
+               @click="handleGroup(element.id, element.title, element.image)"
           >
             <img
                 :place="element.place"
@@ -24,7 +25,6 @@
                 v-if="element.title.length < 10"
                 href="#"
                 class="font-medium text-blue-400"
-                @click="handleGroup(element.id, element.title, element.image)"
                 :title="element.title"
             >
 
