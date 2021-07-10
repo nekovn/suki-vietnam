@@ -39,7 +39,6 @@
                 :title="element.title"
             >{{ element.title.substring(0, 10) + ".." }}</a
             >
-
           </td>
           <div
               @drop="drop($event)"
@@ -51,6 +50,7 @@
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
                 group="drag"
+                :disabled="!isAnimateSpin"
                 @change="log"
                 @end="end"
                 :clone="cloneItem"
@@ -58,7 +58,7 @@
             >
               <template #item="{ element }">
                 <td
-                    class="py-3 px-2 sm:px-2 lg:px-2 xl:px-4 2xl:px-5 text-left"
+                    class="p-2 sm:px-2 lg:px-2 xl:px-4 2xl:px-5 text-left"
                     :title="element.title"
                 >
                   <div
@@ -88,6 +88,7 @@
                     >
                       {{ element.title }}
                     </a>
+
                   </div>
                 </td>
               </template>
@@ -180,6 +181,7 @@ export default {
       })
       state.categories = state.categories.sort((a, b) => a.place - b.place)
     }
+
     async function handleGetLogo(data){
       const searchTitle = (element) => element.title === data.title;
       const setIndexItem = state.items.findIndex(searchTitle);
@@ -202,13 +204,14 @@ export default {
         notification_error(notification, `もう一度やり直してください。`)
       }
     }
+    
     async function drop(evt) {
-      const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
-      if (result) {
-        store.commit("setOpenItemPop", true)
-        store.commit("setItemPopModal", result.newData)
-        store.commit("setItemsFromGG", result.data)
-      }
+          const result = await getUrlFromGG(evt, state.items, state.categories, store, 'ItemsInTable');
+          if (result) {
+            store.commit("setOpenItemPop", true)
+            store.commit("setItemPopModal", result.newData)
+            store.commit("setItemsFromGG", result.data)
+          }
     }
 
     async function end(e) {
@@ -295,7 +298,7 @@ export default {
       }
     }
 
-    function handleGroup(id, title) {
+    function handleGroup(id, title, image) {
       store.commit("setIsLoading", true);
       if (id) {
         router.push({
@@ -305,6 +308,7 @@ export default {
           },
         });
         store.commit("setGroupName", title);
+        store.commit("setGroupImage", image);
         store.commit("setCategoryModal", true);
       }
     }
@@ -321,6 +325,7 @@ export default {
       dragenter,
       drop,
       dragover,
+      isAnimateSpin,
       handleEndGroup
     };
   },
