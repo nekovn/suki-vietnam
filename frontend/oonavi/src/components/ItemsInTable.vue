@@ -44,11 +44,6 @@
                 v-model="element.data"
                 item-key="id"
                 class="grid grid-flow-col grid-cols-5"
-                group="drag"
-                :disabled="!isAnimateSpin"
-                @change="log"
-                @end="end"
-                :clone="cloneItem"
                 :id="`category-` + element.id"
             >
               <template #item="{ element }">
@@ -107,10 +102,7 @@ import draggable from "vuedraggable";
 import PaginationItems from "./PaginationItems";
 import {useStore} from "vuex";
 import NoItemsInTable from "./NoItemsInTable.vue";
-import {handleEventEnd} from "../utilities/helps/handleEventEnd";
-import {getCloneItem} from "../utilities/helps/getCloneItem";
-import {notification_error} from "../utilities/composition/useNotification";
-import {notification} from "ant-design-vue"
+
 export default {
   name: "itemsintable",
   components: {draggable, PaginationItems, NoItemsInTable},
@@ -121,7 +113,6 @@ export default {
     const store = useStore();
     const router = useRouter();
     const listItems = toRef(props, "newListItems");
-    const cloneData = ref([]);
     const isAnimateSpin = computed(()=>store.state.isAnimateSpin)
     const state = reactive({
       totalItem: 10,
@@ -163,67 +154,6 @@ export default {
       state.categories = state.categories.sort((a, b) => a.place - b.place)
     }
 
-   
-
-    async function end(e) {
-      const result = await handleEventEnd(
-          e,
-          cloneData,
-          store,
-          state.items,
-          state.categories,
-          state.id
-      );
-      if (result) {
-        if (result.type === "movedRow") {
-          state.list = result.list;
-          state.items = result.items;
-          state.categories = result.category;
-        }
-        if (result.type === "movedColumn") {
-          state.list = result.list;
-          state.items = result.items;
-          state.categories = result.category;
-        }
-        if (result.type === "deleteItem") {
-          state.list = result.list;
-          state.items = result.items;
-          state.categories = result.category;
-        }
-      }
-    }
-
-    async function log(evt) {
-      if (evt.removed && !evt.removed.newIndex) {
-        state.id = evt.removed.element.id;
-      }
-
-      if (evt.added) {
-        state.list = state.list.map((data) => {
-          if (data.data.length >= 6) {
-            const newData = data.data.slice(0, 5);
-            return {...data, data: newData};
-          }
-          return {...data};
-        });
-      }
-    }
-
-    function cloneItem({id, title, url, image, created, modified}) {
-      state.items = store.getters.getItems.filter((item) => item.id !== id);
-      const result = getCloneItem(
-          state.totalLogo,
-          title,
-          url,
-          image,
-          created,
-          modified,
-          cloneData
-      );
-      if (result) {
-        return result;
-      }
-    }
 
     onMounted(async () => {
       const data = await store.dispatch("getListCategory");
@@ -268,9 +198,6 @@ export default {
       state,
       listItems,
       getPagination,
-      end,
-      log,
-      cloneItem,
       handleGroup,
       isAnimateSpin,
       handleEndGroup
