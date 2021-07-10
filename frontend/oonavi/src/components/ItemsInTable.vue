@@ -326,8 +326,6 @@ export default {
       cloneItem,
       handleGroup,
       dragenter,
-      
-      ,
       dragover,
       isAnimateSpin,
       handleEndGroup
