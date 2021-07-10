@@ -107,7 +107,6 @@ import draggable from "vuedraggable";
 import PaginationItems from "./PaginationItems";
 import {useStore} from "vuex";
 import NoItemsInTable from "./NoItemsInTable.vue";
-import {getUrlFromGG} from "../utilities/helps/getUrlFromGG";
 import {handleEventEnd} from "../utilities/helps/handleEventEnd";
 import {getCloneItem} from "../utilities/helps/getCloneItem";
 import {notification_error} from "../utilities/composition/useNotification";
